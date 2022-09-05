@@ -1,7 +1,11 @@
 package contract
 
-import "sso/dto"
+import (
+	"sso/adapter/db"
+	"sso/dto"
+)
 
 type (
-	ValidateUserRegisterUserRequest func(req dto.RegisterUserRequest) error
+	ValidateUserRegisterUserRequest func(db db.DB, req dto.RegisterUserRequest) error
+	ValidateUserLoginRequest        func(req dto.LoginUserRequest) error
 )
