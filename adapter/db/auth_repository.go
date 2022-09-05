@@ -22,7 +22,7 @@ func (db DB) CheckUserExists(email string) (User, error) {
 	result := db.store.Where("email = ?", email).First(&user)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return user, errors.New("not match or credential")
+		return user, errors.New("not match our credential")
 	}
 
 	return user, nil

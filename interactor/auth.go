@@ -62,7 +62,7 @@ func (i Interactor) LoginClient(req dto.LoginUserRequest) (dto.LoginUserResponse
 	}
 
 	if passwordErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); passwordErr != nil {
-		return dto.LoginUserResponse{}, errors.New("not match")
+		return dto.LoginUserResponse{}, errors.New("not match our credential")
 	}
 
 	randomString := helper.RandomStringGenerator(100)
