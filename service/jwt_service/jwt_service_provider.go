@@ -10,14 +10,12 @@ import (
 
 type MyJWTClaims struct {
 	*jwt.RegisteredClaims
-	ClientId uint `json:"client_id"`
+	ClientId uint   `json:"client_id"`
+	Audience string `json:"audience"`
 }
 
-var secret = []byte("secret key for my application it is just a secret")
-
-func CreateToken(tokenId string) (string, error) {
+func CreateToken(tokenId string, clientId uint, audience string, expiryDate time.Time) (string, error) {
 	token := jwt.New(jwt.SigningMethodRS256)
-	exp := time.Now().Add(time.Hour * 24 * 30)
 
 	privateKey, _ := ioutil.ReadFile(os.Getenv("PRIVATE_KEY_PATH"))
 	signKey, err := jwt.ParseRSAPrivateKeyFromPEM(privateKey)
@@ -27,13 +25,15 @@ func CreateToken(tokenId string) (string, error) {
 
 	token.Claims = &MyJWTClaims{
 		&jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(exp),
+			Subject:   "access_token",
+			ExpiresAt: jwt.NewNumericDate(expiryDate),
 			ID:        tokenId,
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
-		433,
+		clientId,
+		audience,
 	}
 
-	fmt.Println(signKey)
 	val, err := token.SignedString(signKey)
 
 	if err != nil {

@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
 	"os"
+	"sso/adapter/db"
 	"sso/router"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -14,9 +15,11 @@ func main() {
 		godotenv.Load(".env")
 	}
 
+	db := db.NewDB(os.Getenv("DATABASE_DSN"))
+
 	ginEngine := gin.Default()
 
-	router.RegisterV1Routes(ginEngine)
+	router.RegisterV1Routes(ginEngine, db)
 
 	ginEngine.Run(os.Getenv("GIN_ADDRESS"))
 }
